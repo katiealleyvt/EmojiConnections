@@ -118,6 +118,7 @@
 
     let canSubmit = false;
     let selected = [];
+    let lastCompleteRow = 0;
     function handleSelect(id){
         var el = elements.find(f => f.id == id);
         
@@ -163,7 +164,23 @@
                 success = true;
             }
             if(success){
-                console.log("Success");
+                // Move them to the front
+                for (let i=0; i<4; i++){
+                    var elIndex = elements.findIndex(e => e.id === sameGroup[i].id)
+                    let element = elements[elIndex];
+                    element.completed = true;
+                    element.selected = false;
+                    elements.splice(elIndex, 1);
+                    elements.unshift(element);
+                }
+                elements = elements;
+                // Remove them
+                elements.splice(0,4);
+                // Add col-row answer
+                var answerDiv = "<div class='col' style='grid-column: 1/-1;'>hello</div>";
+                document.getElementsByClassName("col")[0].insertAdjacentHTML('beforebegin', answerDiv);
+               
+                elements = elements;
             }
             else{
                 console.log("Wrong")
@@ -171,11 +188,12 @@
         }
     }
 </script>
-<div>{#each selected as el}
-{el}
-{/each}</div>
+<div style='grid-column: 1/-1;'>
+
+</div>
+
 <div class="grid-container">
-    <div class="grid">
+    <div class="grid" id="grid">
             {#each elements as col (col.id)}
             <div class="col" class:selected={col.selected}>
                 <button on:click={() => {handleSelect(col.id)}}>{col.emoji}</button>
@@ -247,6 +265,7 @@
     .selected{
         background: #5a594e !important;
     }
+    
 
     *{
         box-sizing: border-box;
