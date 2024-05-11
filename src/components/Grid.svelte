@@ -113,19 +113,43 @@
             completed: false
         }
             ];
-    
+    let answers = [{
+        id: 1,
+        title: 'animals',
+        desc: '🐘🦘🦙🐍',
+        color: '#a0c35a'
+    },
+    {
+        id: 2,
+        title: 'anxiety',
+        desc: '🫨🫠😳😥',
+        color: '#b0c4ef'
+    },
+    {
+        id: 3,
+        title: 'mother\'s day',
+        desc: '👩💝👩‍🍼👒',
+        color: '#ba81c5'
+    },
+    {
+        id: 4,
+        title: 'oranges',
+        desc: '🍊🍊🍊🍊',
+        color: '#f9df6d'
+    },
+];
     
 
     let canSubmit = false;
     let selected = [];
     let lastCompleteRow = 0;
     function handleSelect(id){
+       
         var el = elements.find(f => f.id == id);
         
         if(!el.selected && selected.length < 4){
             el.selected = true;
             selected.push(el);
-            
         }
         else{
             el.selected = false;
@@ -164,6 +188,7 @@
                 success = true;
             }
             if(success){
+
                 // Move them to the front
                 for (let i=0; i<4; i++){
                     var elIndex = elements.findIndex(e => e.id === sameGroup[i].id)
@@ -173,14 +198,23 @@
                     elements.splice(elIndex, 1);
                     elements.unshift(element);
                 }
+                selected = []
                 elements = elements;
                 // Remove them
                 elements.splice(0,4);
+                
+                var answer = answers.find(f => f.id === sameGroup[0].group);
                 // Add col-row answer
-                var answerDiv = "<div class='col' style='grid-column: 1/-1;'>hello</div>";
-                document.getElementsByClassName("col")[0].insertAdjacentHTML('beforebegin', answerDiv);
+                var answerDiv = document.getElementById('answerDiv').cloneNode(true);
+                answerDiv.style.display = "block";
+                answerDiv.querySelector('h3').textContent = answer.title.toUpperCase();
+                answerDiv.querySelector('p').textContent = answer.desc.toUpperCase();
+                answerDiv.style.background = answer.color;
+
+                document.getElementsByClassName("col-grid")[0].before(answerDiv);
                
                 elements = elements;
+                console.log(elements);
             }
             else{
                 console.log("Wrong")
@@ -188,14 +222,12 @@
         }
     }
 </script>
-<div style='grid-column: 1/-1;'>
-
-</div>
+<div class="col" style='grid-column: 1/-1; display: none;' id="answerDiv"><h3></h3><p></p></div>
 
 <div class="grid-container">
     <div class="grid" id="grid">
             {#each elements as col (col.id)}
-            <div class="col" class:selected={col.selected}>
+            <div class="col col-grid" class:selected={col.selected}>
                 <button on:click={() => {handleSelect(col.id)}}>{col.emoji}</button>
             </div>
             {/each}
@@ -240,7 +272,7 @@
         -ms-user-select: none; /* IE 10 and IE 11 */
         user-select: none; /* Standard syntax */
     }
-    .grid .col{
+    .col{
         border: 5pt solid white;
         padding: 5px;
         min-width: 100px;
@@ -265,7 +297,12 @@
     .selected{
         background: #5a594e !important;
     }
-    
+    #answerDiv{
+        font-size: 18pt;
+    }
+    #answerDiv h3, #answerDiv p{
+        margin: 5px;
+    }
 
     *{
         box-sizing: border-box;
