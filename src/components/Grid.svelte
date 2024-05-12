@@ -143,6 +143,7 @@
     let canSubmit = false;
     let selected = [];
     let lastCompleteRow = 0;
+    let mistakesLeft = 4;
     function handleSelect(id){
        
         var el = elements.find(f => f.id == id);
@@ -217,7 +218,7 @@
                 console.log(elements);
             }
             else{
-                console.log("Wrong")
+                mistakesLeft -= 1;
             }
         }
     }
@@ -225,12 +226,20 @@
 <div class="col" style='grid-column: 1/-1; display: none;' id="answerDiv"><h3></h3><p></p></div>
 
 <div class="grid-container">
+    <p>Create four groups of four, Emoji style!</p>
     <div class="grid" id="grid">
             {#each elements as col (col.id)}
             <div class="col col-grid" class:selected={col.selected}>
                 <button on:click={() => {handleSelect(col.id)}}>{col.emoji}</button>
             </div>
             {/each}
+    </div>
+    <div id="mistake-counter">
+        <p>Mistakes remaining: 
+            {#each {length: mistakesLeft} as _, i}
+            <i class="fa-solid fa-circle circle-icon fa-sm" style="color: #5a594e;"></i>
+            {/each}
+        </p>
     </div>
     <div class="action-items">
         <button on:click={shuffle}>Shuffle</button>
@@ -241,10 +250,13 @@
 
 
 <style>
+    .circle-icon{
+        margin: 3px;
+        
+    }
     .action-items{
         display: flex;
         justify-content: center;
-        margin-top: 25px;
         
     }
     .action-items button{
@@ -256,12 +268,18 @@
     .action-items button:hover{
        cursor: pointer;
     }
+    #mistake-counter{
+        display: flex;
+        justify-content: center;
+
+    }
     .grid-container{
         display: block;
         justify-content: center;
         align-content: center;
         margin: 5rem auto;
         max-width: 500px;
+        text-align: center;
         
     }
     .grid {
